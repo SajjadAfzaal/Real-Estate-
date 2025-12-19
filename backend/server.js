@@ -2,8 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const userRoute = require("./routes/userRoute");
+const authRoute = require("./routes/autRoute");
 
 const app = express();
+app.use(express.json());
 
 dotenv.config();
 const port = process.env.PORT || 3000;
@@ -19,3 +21,4 @@ app.listen(port, () => {
 });
 
 app.use("/api/users", userRoute);
+app.use("/auth", authRoute);
