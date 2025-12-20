@@ -1,7 +1,8 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
+const errorHandler = require("../utils/error");
 
-const signup = async (req, res) => {
+const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
@@ -9,16 +10,17 @@ const signup = async (req, res) => {
   } else {
     const hashedPassword = bcrypt.hashSync(password, 10);
     const newUser = new User({ username, email, password: hashedPassword });
-    await newUser
-      .save()
-      .then(() =>
-        res.status(201).json({ message: "User created successfully" })
-      )
-      .catch((error) =>
-        res
-          .status(500)
-          .json({ message: "Error creating user", error: error.message })
-      );
+    try {
+      await newUser.save();
+
+      res.status(201).json({ message: "User created successfully" });
+    } catch (error) {
+      // res
+      // .status(500)
+      // .json({ message: "Error creating user", error: error.message })
+      // next(errorHandler(590, "Error from utils error function"))
+      next(error);
+    }
   }
 };
 module.exports = { signup };

@@ -22,3 +22,9 @@ app.listen(port, () => {
 
 app.use("/api/users", userRoute);
 app.use("/auth", authRoute);
+
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 534;
+  const message = err.message || "Internal Server Error";
+  return res.status(statusCode).json({ success: false, statusCode, message });
+});
